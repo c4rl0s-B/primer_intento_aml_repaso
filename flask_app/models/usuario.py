@@ -1,6 +1,9 @@
 #TODAS LAS CLASES IMPORTAN MYSQLCONNECTION
 from flask_app.config.mysqlconnection import connectToMySQL
-
+import re
+from flask import flash
+#exprecion regular r'^[a-zA-Z0-9.+_-]+@[a-zA-z0-9._-]+.[a-zA-Z]+$'
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-z0-9._-]+.[a-zA-Z]+$')
 class Usuario:
 
     #metodo constructor
@@ -57,3 +60,56 @@ class Usuario:
     def delete(cls, datos):
         query = "DELETE FROM usuarios WHERE id = %(id)s;"
         return connectToMySQL('cinepedia').query_db(query, datos)
+
+    @classmethod
+    def get_by_email(cls, datos):
+        query = "SELECT * FROM usuarios WHERE email = %(email)s"
+        usuario_en_db = connectToMySQL('CinePedia').query_db(query, datos)
+        return cls(usuario_en_db[0])
+
+
+
+
+    #creamos un metodo estatico para validar los formularios
+    @staticmethod
+
+    def validar_usuario(usuario):
+        es_valido = True
+        #por cada validacion se crea un if 
+        #Revisa si el campo coincide con el 
+        if not EMAIL_REGEX.match(usuario['email']):
+        
+            flash("E-mail invalido")
+
+            es_valido = False
+
+        if len (usuario['nombre'])<=2:
+            flash("Nombre de usuario necesita al menos 2 carcteress", "usuario")
+            es_valido = False
+        if len (usuario['apellido'])<=2:
+            flash("Apellido de usuario necesita al menos 2 carcteress", "usuario")
+            es_valido = False
+        #falta validacion de contraseña = confirmacion contraseña 
+        if not usuario ['password'] == usuario['password_conf']:
+            flash('la contraseña no coinside con la informacion','password')
+            es_valido = False
+
+
+        # if len(resultados) == 1:
+        #    #Si existe el usuario
+        #    usuario = cls(resultados[0])
+        #    return usuario #Regreso la instancia del usuario con ese correo
+        # else:
+        #    return False
+        if not Usuario.get_by_email({'email':usuario['email']}):
+            flash('el correo no se encuentra disponible')
+            es_valido = False
+        return es_valido
+
+    @staticmethod
+    def validar_login(usuario):
+        es_valido = True
+        if not Usuario.get_by_email({'email':usuario['email']}):
+            flash('el correo no se encuentra disponible')
+            es_valido = False
+        return es_valido

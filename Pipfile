@@ -5,10 +5,10 @@ name = "pypi"
 
 [packages]
 flask = "*"
-pymysql = "*"
 flask-bcrypt = "*"
+pymysql = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.14"
