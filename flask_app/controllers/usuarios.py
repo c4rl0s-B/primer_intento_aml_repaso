@@ -46,6 +46,24 @@ def crear_usuario():
     return redirect('/cine')
 
 #inicio sesión 
+@app.route('/iniciar_sesion', methods=['POST'])
+def iniciar_sesion():
+    #buscamos al usuario por su email
+    usuario = Usuario.get_by_email({'email': request.form['email_inicio_sesion']})
+
+    #si no existe o la contraseña no coincide, mostramos el mismo mensaje
+    if not usuario or not bcrypt.check_password_hash(usuario.password, request.form['password_inicio_sesion']):
+        flash("E-mail o contraseña incorrectos", "inicio_sesion")
+        return redirect('/')
+
+    session['usuario_id'] = usuario.id
+    session['nombre'] = usuario.nombre
+    return redirect('/cine')
 
 
 #cerrar sesión
+@app.route('/cerrar_sesion')
+def cerrar_sesion():
+
+    session.clear()
+    return redirect('/')
