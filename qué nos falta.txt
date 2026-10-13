@@ -5,3 +5,6 @@
 #css (opcional)
 
 #comentarios
+
+#Validaciones peliculas
+

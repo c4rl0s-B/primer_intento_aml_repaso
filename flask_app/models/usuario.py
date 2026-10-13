@@ -47,7 +47,9 @@ class Usuario:
     def get_one(cls,datos):
         query = "SELECT * FROM usuarios WHERE id = %(id)s;"
         usuario_en_db = connectToMySQL('cinepedia').query_db(query,datos)
-
+        print("USUARIO EN DB",usuario_en_db)
+        if not usuario_en_db:
+            return None
         return cls(usuario_en_db[0])
 
     #metodo para editar registro
@@ -63,57 +65,47 @@ class Usuario:
     def delete(cls, datos):
         query = "DELETE FROM usuarios WHERE id = %(id)s;"
         return connectToMySQL('cinepedia').query_db(query, datos)
-
+        
 
 
     @classmethod
     def get_by_email(cls, datos):
         query = "SELECT * FROM usuarios WHERE email=%(email)s"
+    
         usuario_en_db = connectToMySQL('cinepedia').query_db(query,datos)
+       
+        print("USUARIO EN DB",usuario_en_db)
+        if not usuario_en_db:
+            return None
         return cls(usuario_en_db[0])
         #Si no tenemos respuesta en la base de datos, va a retornar False
     
     #usamos metodo estatico para validar los formularios
+    #VALIDACIONES DEL REGISTRO
+   
+    #es staticmethod porque no necesita la clase ni una instancia, solo el formulario
     @staticmethod
+    def validar_registro(formulario):
+        es_valido = True
 
-    def validar_usuario( usuario ):
+        if len(formulario['nombre']) < 2:
+            flash("El nombre debe tener al menos 2 caracteres", "registro")
+            es_valido = False
 
-       es_valido = True
-       #por cada validacion que yo haga, voy a un if 
+        if len(formulario['apellido']) < 2:
+            flash("El apellido debe tener al menos 2 caracteres", "registro")
+            es_valido = False
 
-       #Revisa si el campo coincide con el patrón
+        if not EMAIL_REGEX.match(formulario['email']):
+            flash("El email no tiene un formato válido", "registro")
+            es_valido = False
+        elif Usuario.get_by_email({'email': formulario['email']}):
+            print(Usuario.get_by_email({'email': formulario['email']}))
+            flash("Ya existe una cuenta con ese email", "registro")
+            es_valido = False
 
-       if not EMAIL_REGEX.match(usuario['email']):
-
-           flash("E-mail inválido")
-
-           es_valido = False
-       if len(usuario['nombre']) < 2:
-            flash("Nombre de usuario necesita al menos 2 caracteres", "usuario")
-            es_valido= False
-       if len(usuario['apellido']) < 2:
-            flash("El apellido del usuario necesita al menos 2 caracteres", "usuario")
-            es_valido= False
-       #falta validacion de contraseña = confirmacion contraseña
-       if not usuario['password'] == usuario['password_conf']:
-           flash('La contraseña no coindice con la confirmacion')
-           es_valido= False
-
-       if not Usuario.get_by_email({'email':usuario['email']
-                                    }):
-           flash('El correo no se encuentra disponible')
-           es_valido = False
-
-       return es_valido
-
-    @staticmethod
-    def validar_login(usuario):
-
-        es_valido= True
-
-        if not Usuario.get_by_email({'email':usuario['email']
-                                    }):
-           flash('El correo no se encuentra en la base datos')
-           es_valido = False
+        if formulario['password'] != formulario['password_conf']:
+            flash("Las contraseñas no coinciden", "registro")
+            es_valido = False
 
         return es_valido

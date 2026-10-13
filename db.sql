@@ -20,7 +20,7 @@ USE `cinepedia` ;
 CREATE TABLE IF NOT EXISTS `cinepedia`.`usuarios` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(255) NULL,
-  `apelido` VARCHAR(255) NULL,
+  `apellido` VARCHAR(255) NULL,
   `email` VARCHAR(255) NULL,
   `password` VARCHAR(255) NULL,
   `created_at` DATETIME NULL,

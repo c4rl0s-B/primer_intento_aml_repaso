@@ -22,8 +22,8 @@ def crear_usuario():
     #--- YO DEBERÍA VALIDAR QUE LOS DATOS INGRESADOS
     #--- SEAN VALIDOS
 
-    if not Usuario.validar_usuario(request.form):
-        
+    if not Usuario.validar_registro(request.form):
+        print("Usuario Invalido")
         return redirect('/')
 
     #--- VALIDACIONES ---
@@ -42,7 +42,7 @@ def crear_usuario():
     nuevo_id = Usuario.save(datos_usuario_registro) #Recibiendo el ID del nuevo Usuario
 
     session['usuario_id'] = nuevo_id
-    
+
     return redirect('/cine')
 
 #inicio sesión 

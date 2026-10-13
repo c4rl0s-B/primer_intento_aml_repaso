@@ -9,6 +9,11 @@
 
     <form action="/crear_usuario" method="post">
         <h2>Registro</h2>
+        {% with mensajes = get_flashed_messages(category_filter=['registro']) %}
+                {% for mensaje in mensajes %}
+                    <p class="error">{{ mensaje }}</p>
+                {% endfor %}
+        {% endwith %}
         <br>
         <label for="nombre_usuario_registro">Nombre:</label>
         <input type="text" id="nombre_usuario_registro" name="nombre">
