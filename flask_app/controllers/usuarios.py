@@ -49,3 +49,7 @@ def crear_usuario():
 
 
 #cerrar sesión
+
+@app.route('/cerrar_session')
+def cerrar_sesion():
+    session clear

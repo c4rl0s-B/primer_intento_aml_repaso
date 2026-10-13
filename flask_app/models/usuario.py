@@ -5,7 +5,7 @@ from flask import flash
 
 # Objeto de expresión regular que usaremos para validar
 
-EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+.[a-zA-Z]+$')
+EMAIL_REGEX = re.compile(r'[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+.[a-zA-Z]+$')
 
 class Usuario:
 
